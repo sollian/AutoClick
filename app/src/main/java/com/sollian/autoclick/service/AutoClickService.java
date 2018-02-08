@@ -174,14 +174,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
         if (info == null) {
             info = new AccessibilityServiceInfo();
         }
-//        info.eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-
-//        if (pkgName == null) {
-//            info.packageNames = null;
-//        } else {
-//            info.packageNames = new String[]{pkgName};
-//        }
         info.notificationTimeout = timeDelay;
         setServiceInfo(info);
     }

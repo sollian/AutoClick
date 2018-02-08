@@ -152,7 +152,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
             vState.setText("服务已开启");
             vSwitch.setText("关闭服务");
         } else {
-            vState.setText("服务未开启");
+            vState.setText("操作步骤：点击辅助——开启服务");
             vSwitch.setText("开启服务");
         }
 
@@ -164,7 +164,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
             vPermissionState.setText("悬浮窗权限已开启");
             vPermission.setVisibility(View.GONE);
         } else {
-            vPermissionState.setText("悬浮窗权限未开启");
+            vPermissionState.setText("操作步骤：权限管理——显示悬浮窗");
             vPermission.setVisibility(View.VISIBLE);
             vPermission.setOnClickListener(this);
         }
