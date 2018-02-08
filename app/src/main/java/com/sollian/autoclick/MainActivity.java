@@ -46,6 +46,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
     private FloatingMask floatingMask;
     private FloatingGuide floatingGuide;
 
+    private AppAdapter appAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +82,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         updateSwitch();
         updateAppInfo();
         updatePermission();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appAdapter = new AppAdapter(MainActivity.this);
+            }
+        }).start();
     }
 
     private void checkShowFloatIfNeed() {
@@ -194,7 +203,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         if (appsDialog == null) {
             appsDialog = new AlertDialog.Builder(this)
                     .setTitle("选择目标应用")
-                    .setAdapter(new AppAdapter(this), this)
+                    .setAdapter(appAdapter, this)
                     .create();
             appsDialog.setCancelable(true);
             appsDialog.setCanceledOnTouchOutside(true);
