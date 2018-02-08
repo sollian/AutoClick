@@ -27,6 +27,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
 
     private int times;
     private long start;
+    private int totalCount;
 
     private AccessibilityNodeInfo nodeInfo;
 
@@ -85,7 +86,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
                 float frequency = times * 1000.0f / (System.currentTimeMillis() - start);
                 ConfigCache.getInstance().setFrequency(frequency);
             }
-            ConfigCache.getInstance().setTotalCount(times);
+            ConfigCache.getInstance().setTotalCount(++totalCount);
         } else {
             ConfigCache.getInstance().guide(ConfigCache.TYPE_GUIDE_SEL_TARGET);
             ConfigCache.getInstance().setEnable(false);
@@ -136,17 +137,20 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
             case ConfigCache.TYPE_PKG_NAME:
                 start = 0;
                 times = 0;
+                totalCount = 0;
                 pkgName = getPkgName();
                 break;
             case ConfigCache.TYPE_TARGET:
                 start = 0;
                 times = 0;
+                totalCount = 0;
                 rect = ConfigCache.getInstance().getTargetRect();
                 className = ConfigCache.getInstance().getTargetClassName();
                 break;
             case ConfigCache.TYPE_ENABLE:
                 start = 0;
                 times = 0;
+                totalCount = 0;
                 isEnable = ConfigCache.getInstance().isEnable();
                 if (isEnable && nodeInfo != null) {
                     nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -161,6 +165,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
             case ConfigCache.TYPE_SHUT_DOWN:
                 start = 0;
                 times = 0;
+                totalCount = 0;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     disableSelf();
                 }
