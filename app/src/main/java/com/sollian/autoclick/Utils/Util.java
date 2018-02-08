@@ -28,7 +28,7 @@ public class Util {
 //        return false;
 //    }
 
-    public static boolean isServiceStarted2(Context context, String serviceName) {
+    public static boolean isServiceStarted2(Context context) {
         int ok = 0;
         try {
             ok = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED);
@@ -43,7 +43,7 @@ public class Util {
                 ms.setString(settingValue);
                 while (ms.hasNext()) {
                     String accessibilityService = ms.next();
-                    if (accessibilityService.equalsIgnoreCase(serviceName)) {
+                    if (accessibilityService.contains(context.getPackageName())) {
                         return true;
                     }
 

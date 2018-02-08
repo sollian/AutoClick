@@ -5,7 +5,41 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp"
-    tools:context="solid.ren.demo.MainActivity">
+    tools:context="com.sollian.autoclick.MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="欢迎使用自动点击服务"
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#666" />
+
+    <Button
+        android:id="@+id/permission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启悬浮窗权限" />
+
+    <TextView
+        android:id="@+id/permission_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#888" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#666" />
 
     <Button
         android:id="@+id/btn_switch"
@@ -17,7 +51,14 @@
         android:id="@+id/state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000" />
+        android:textColor="#888" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#666" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -55,6 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="快" />
+
             <RadioButton
                 android:id="@+id/very_fast"
                 android:layout_width="wrap_content"

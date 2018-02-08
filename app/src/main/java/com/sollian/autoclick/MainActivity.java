@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.sollian.autoclick.Cache.ConfigCache;
+import com.sollian.autoclick.Utils.PermissionUtil;
 import com.sollian.autoclick.Utils.Util;
 import com.sollian.autoclick.adapter.AppAdapter;
 import com.sollian.autoclick.adapter.AppInfo;
@@ -21,8 +24,6 @@ import com.sollian.autoclick.window.FloatingController;
 import com.sollian.autoclick.window.FloatingMask;
 
 public class MainActivity extends Activity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, DialogInterface.OnClickListener {
-    private static final String SERVICE_NAME = "solid.ren.demo/solid.ren.demo.service.AutoClickService";
-
     private Button vSwitch;
     private TextView vState;
     private RadioGroup vRadioGroup;
@@ -30,6 +31,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
     private View vAppRoot;
     private ImageView vAppIcon;
     private TextView vAppName;
+
+    private View vPermission;
+    private TextView vPermissionState;
 
     private AlertDialog appsDialog;
 
@@ -63,6 +67,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         vAppIcon = findViewById(R.id.app_icon);
         vAppName = findViewById(R.id.app_name);
 
+        vPermission = findViewById(R.id.permission);
+        vPermissionState = findViewById(R.id.permission_state);
+
         vSwitch.setOnClickListener(this);
         vAppRoot.setOnClickListener(this);
 
@@ -70,11 +77,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
 
         updateSwitch();
         updateAppInfo();
+        updatePermission();
     }
 
     private void checkShowFloatIfNeed() {
         do {
-            if (!Util.isServiceStarted2(this, SERVICE_NAME)) {
+            if (!Util.isServiceStarted2(this)) {
                 break;
             }
 
@@ -101,6 +109,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
     protected void onResume() {
         super.onResume();
         updateSwitch();
+        updatePermission();
     }
 
     @Override
@@ -122,7 +131,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
     }
 
     private void updateSwitch() {
-        if (Util.isServiceStarted2(this, SERVICE_NAME)) {
+        if (Util.isServiceStarted2(this)) {
             vState.setText("服务已开启");
             vSwitch.setText("关闭服务");
         } else {
@@ -133,6 +142,17 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         checkShowFloatIfNeed();
     }
 
+    private void updatePermission() {
+        if (PermissionUtil.checkSysAlertWindow(this)) {
+            vPermissionState.setText("悬浮窗权限已开启");
+            vPermission.setVisibility(View.GONE);
+        } else {
+            vPermissionState.setText("悬浮窗权限未开启");
+            vPermission.setVisibility(View.VISIBLE);
+            vPermission.setOnClickListener(this);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -141,6 +161,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
                 break;
             case R.id.app_root:
                 showAppsDialog();
+                break;
+            case R.id.permission:
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
                 break;
             default:
                 break;
@@ -185,7 +211,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
     }
 
     private void toggleService() {
-        if (!Util.isServiceStarted2(this, SERVICE_NAME)) {
+        if (!Util.isServiceStarted2(this)) {
             //打开系统设置中辅助功能
             Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
             startActivity(intent);
