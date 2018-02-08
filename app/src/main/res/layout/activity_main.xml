@@ -116,9 +116,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="5dp"
+            android:padding="10dp"
             android:text="点此处选择目标应用"
-            android:textColor="#000" />
+            android:textColor="#09c" />
 
         <ImageView
             android:id="@+id/app_icon"

@@ -27,6 +27,8 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
     private int times;
     private long start;
 
+    private AccessibilityNodeInfo nodeInfo;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -36,31 +38,61 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        String pn = event.getPackageName().toString();
+        if (!TextUtils.equals(pn, pkgName)) {
+            switch (event.getEventType()) {
+                case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+                    reset();
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
+
+        switch (event.getEventType()) {
+            case AccessibilityEvent.TYPE_VIEW_CLICKED:
+                dealViewClick(event);
+                break;
+            case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+                reset();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void dealViewClick(AccessibilityEvent event) {
         AccessibilityNodeInfo info = event.getSource();
 
         Rect bounds = new Rect();
         info.getBoundsInScreen(bounds);
         String clazzName = info.getClassName().toString();
 
-        if (!isEnable) {
-            ConfigCache.getInstance().setTarget(bounds, clazzName);
-        } else {
-            if (bounds.equals(rect) && TextUtils.equals(clazzName, className)) {
-                info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+        if (isEnable
+                && bounds.equals(rect)
+                && TextUtils.equals(clazzName, className)) {
+            info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
-                times++;
-                if (start == 0) {
-                    start = System.currentTimeMillis();
-                } else {
-                    float frequency = times * 1000.0f / (System.currentTimeMillis() - start);
-                    ConfigCache.getInstance().setFrequency(frequency);
-                }
-                ConfigCache.getInstance().setTotalCount(times);
+            times++;
+            if (start == 0) {
+                start = System.currentTimeMillis();
             } else {
-                ConfigCache.getInstance().setEnable(false);
-                ConfigCache.getInstance().setTarget(null, null);
+                float frequency = times * 1000.0f / (System.currentTimeMillis() - start);
+                ConfigCache.getInstance().setFrequency(frequency);
             }
+            ConfigCache.getInstance().setTotalCount(times);
+        } else {
+            ConfigCache.getInstance().setEnable(false);
+            ConfigCache.getInstance().setTarget(bounds, clazzName);
+            nodeInfo = info;
         }
+    }
+
+    private void reset() {
+        ConfigCache.getInstance().setEnable(false);
+        nodeInfo = null;
+        ConfigCache.getInstance().setTarget(null, null);
     }
 
     @Override
@@ -103,7 +135,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
         switch (type) {
             case ConfigCache.TYPE_PKG_NAME:
                 pkgName = getPkgName();
-                updateServiceInfo();
+//                updateServiceInfo();
                 break;
             case ConfigCache.TYPE_TARGET:
                 rect = ConfigCache.getInstance().getTargetRect();
@@ -111,6 +143,9 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
                 break;
             case ConfigCache.TYPE_ENABLE:
                 isEnable = ConfigCache.getInstance().isEnable();
+                if (isEnable && nodeInfo != null) {
+                    nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
                 break;
             case ConfigCache.TYPE_TIME_DELAY:
                 timeDelay = ConfigCache.getInstance().getTimeDelay();
@@ -131,14 +166,14 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
         if (info == null) {
             info = new AccessibilityServiceInfo();
         }
-        info.eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED;
+//        info.eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
 
-        if (pkgName == null) {
-            info.packageNames = null;
-        } else {
-            info.packageNames = new String[]{pkgName};
-        }
+//        if (pkgName == null) {
+//            info.packageNames = null;
+//        } else {
+//            info.packageNames = new String[]{pkgName};
+//        }
         info.notificationTimeout = timeDelay;
         setServiceInfo(info);
     }

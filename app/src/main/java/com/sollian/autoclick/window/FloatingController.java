@@ -3,6 +3,7 @@ package com.sollian.autoclick.window;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -100,8 +101,20 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
                 vFrequency.setText(String.format("%.1f次/s", ConfigCache.getInstance().getFrequency()));
                 vCount.setText(String.valueOf(ConfigCache.getInstance().getTotalCount()));
                 break;
+            case ConfigCache.TYPE_TARGET:
+                updateSwitchState();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void updateSwitchState() {
+        if (!TextUtils.isEmpty(ConfigCache.getInstance().getTargetClassName())
+                && !ConfigCache.getInstance().getTargetRect().isEmpty()) {
+            vSwitch.setEnabled(true);
+        } else {
+            vSwitch.setEnabled(false);
         }
     }
 
