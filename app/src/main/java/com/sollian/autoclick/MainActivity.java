@@ -21,6 +21,7 @@ import com.sollian.autoclick.Utils.Util;
 import com.sollian.autoclick.adapter.AppAdapter;
 import com.sollian.autoclick.adapter.AppInfo;
 import com.sollian.autoclick.window.FloatingController;
+import com.sollian.autoclick.window.FloatingGuide;
 import com.sollian.autoclick.window.FloatingMask;
 
 public class MainActivity extends Activity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, DialogInterface.OnClickListener {
@@ -43,6 +44,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
 
     private FloatingController floatingController;
     private FloatingMask floatingMask;
+    private FloatingGuide floatingGuide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +98,23 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
             }
             floatingMask.show();
             floatingController.show();
+
+            if (!Util.getHasShowGuide(this) && floatingGuide == null) {
+                floatingGuide = new FloatingGuide(this);
+            }
+            if (floatingGuide != null) {
+                floatingGuide.show();
+            }
             return;
         } while (false);
 
         if (floatingController != null) {
             floatingController.hide();
             floatingMask.hide();
+        }
+
+        if (floatingGuide != null) {
+            floatingGuide.hide();
         }
     }
 
@@ -127,6 +140,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         if (floatingController != null) {
             floatingController.hide();
             floatingMask.hide();
+        }
+
+        if (floatingGuide != null) {
+            floatingGuide.hide();
         }
     }
 

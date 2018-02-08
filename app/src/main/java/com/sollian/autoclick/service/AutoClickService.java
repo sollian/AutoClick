@@ -42,6 +42,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
         if (!TextUtils.equals(pn, pkgName)) {
             switch (event.getEventType()) {
                 case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+                    ConfigCache.getInstance().guide(ConfigCache.TYPE_GUIDE_EXIT_APP);
                     reset();
                     break;
                 default:
@@ -55,6 +56,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
                 dealViewClick(event);
                 break;
             case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+                ConfigCache.getInstance().guide(ConfigCache.TYPE_GUIDE_ENTER_APP);
                 reset();
                 break;
             default:
@@ -72,6 +74,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
         if (isEnable
                 && bounds.equals(rect)
                 && TextUtils.equals(clazzName, className)) {
+            ConfigCache.getInstance().guide(ConfigCache.TYPE_GUIDE_START_AUTO_CLICK);
             info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 
             times++;
@@ -83,6 +86,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
             }
             ConfigCache.getInstance().setTotalCount(times);
         } else {
+            ConfigCache.getInstance().guide(ConfigCache.TYPE_GUIDE_SEL_TARGET);
             ConfigCache.getInstance().setEnable(false);
             ConfigCache.getInstance().setTarget(bounds, clazzName);
             nodeInfo = info;
@@ -127,31 +131,35 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
 
     @Override
     public void configChange(int type) {
-        if (type != ConfigCache.TYPE_FREQUENCY
-                && type != ConfigCache.TYPE_COUNT) {
-            start = 0;
-            times = 0;
-        }
         switch (type) {
             case ConfigCache.TYPE_PKG_NAME:
+                start = 0;
+                times = 0;
                 pkgName = getPkgName();
-//                updateServiceInfo();
                 break;
             case ConfigCache.TYPE_TARGET:
+                start = 0;
+                times = 0;
                 rect = ConfigCache.getInstance().getTargetRect();
                 className = ConfigCache.getInstance().getTargetClassName();
                 break;
             case ConfigCache.TYPE_ENABLE:
+                start = 0;
+                times = 0;
                 isEnable = ConfigCache.getInstance().isEnable();
                 if (isEnable && nodeInfo != null) {
                     nodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 }
                 break;
             case ConfigCache.TYPE_TIME_DELAY:
+                start = 0;
+                times = 0;
                 timeDelay = ConfigCache.getInstance().getTimeDelay();
                 updateServiceInfo();
                 break;
             case ConfigCache.TYPE_SHUT_DOWN:
+                start = 0;
+                times = 0;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     disableSelf();
                 }

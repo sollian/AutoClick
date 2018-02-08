@@ -24,7 +24,7 @@ import com.sollian.autoclick.adapter.AppInfo;
  */
 
 public class FloatingController implements ConfigCache.OnConfigChangeListener, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
-    private final Context mContext;
+    private final Context context;
     private WindowManager.LayoutParams params;
     private final FloatingManager floatingManager;
 
@@ -39,8 +39,8 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
     private boolean isAdded;
 
     public FloatingController(Context context) {
-        mContext = context.getApplicationContext();
-        floatingManager = FloatingManager.getInstance(mContext);
+        this.context = context.getApplicationContext();
+        floatingManager = FloatingManager.getInstance(this.context);
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
 
         vRoot = mLayoutInflater.inflate(R.layout.float_controller, null);
@@ -138,8 +138,8 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.app_root:
-                Intent intent = new Intent(mContext, MainActivity.class);
-                mContext.startActivity(intent);
+                Intent intent = new Intent(context, MainActivity.class);
+                context.startActivity(intent);
                 break;
             default:
                 break;

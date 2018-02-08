@@ -1,12 +1,10 @@
 package com.sollian.autoclick.Utils;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.view.accessibility.AccessibilityManager;
-
-import java.util.List;
+import android.view.WindowManager;
 
 /**
  * @author sollian on 2018/2/6.
@@ -51,5 +49,20 @@ public class Util {
             }
         }
         return false;
+    }
+
+    public static int getScreenHeight(Context context) {
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        return manager.getDefaultDisplay().getHeight();
+    }
+
+    public static boolean getHasShowGuide(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("sollian", Context.MODE_PRIVATE);
+        return sp.getBoolean("showGuide", false);
+    }
+
+    public static void setHasShowGuide(Context context, boolean flag) {
+        SharedPreferences sp = context.getSharedPreferences("sollian", Context.MODE_PRIVATE);
+        sp.edit().putBoolean("showGuide", flag).apply();
     }
 }

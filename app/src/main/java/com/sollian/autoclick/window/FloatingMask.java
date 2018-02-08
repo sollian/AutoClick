@@ -16,7 +16,7 @@ import com.sollian.autoclick.R;
  */
 
 public class FloatingMask implements ConfigCache.OnConfigChangeListener {
-    private final Context mContext;
+    private final Context context;
     private WindowManager.LayoutParams params;
     private final FloatingManager floatingManager;
 
@@ -25,8 +25,8 @@ public class FloatingMask implements ConfigCache.OnConfigChangeListener {
     private boolean isAdded;
 
     public FloatingMask(Context context) {
-        mContext = context.getApplicationContext();
-        floatingManager = FloatingManager.getInstance(mContext);
+        this.context = context.getApplicationContext();
+        floatingManager = FloatingManager.getInstance(this.context);
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
 
         vRoot = mLayoutInflater.inflate(R.layout.float_mask, null);

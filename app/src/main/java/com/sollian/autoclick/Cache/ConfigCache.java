@@ -20,6 +20,10 @@ public final class ConfigCache {
     public static final int TYPE_TIME_DELAY = 5;
     public static final int TYPE_SHUT_DOWN = 6;
     public static final int TYPE_COUNT = 7;
+    public static final int TYPE_GUIDE_ENTER_APP = 8;
+    public static final int TYPE_GUIDE_SEL_TARGET = 9;
+    public static final int TYPE_GUIDE_START_AUTO_CLICK = 10;
+    public static final int TYPE_GUIDE_EXIT_APP = 11;
 
     private boolean isEnable;
     private AppInfo appInfo;
@@ -107,6 +111,10 @@ public final class ConfigCache {
 
     public void shutDown() {
         notifyConfigChange(TYPE_SHUT_DOWN);
+    }
+
+    public void guide(int type) {
+        notifyConfigChange(type);
     }
 
     private void notifyConfigChange(int type) {
