@@ -1,7 +1,10 @@
 package com.sollian.autoclick.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.WindowManager;
@@ -75,5 +78,29 @@ public class Util {
             height = context.getResources().getDimensionPixelSize(resourceId);
         }
         return height;
+    }
+
+    public static void startActivity(Context context, String packname) {
+        PackageManager packageManager = context.getPackageManager();
+        if (checkPackInfo(context, packname)) {
+            Intent intent = packageManager.getLaunchIntentForPackage(packname);
+            context.startActivity(intent);
+        }
+    }
+
+    /**
+     * 检查包是否存在
+     *
+     * @param packname
+     * @return
+     */
+    private static boolean checkPackInfo(Context context, String packname) {
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = context.getPackageManager().getPackageInfo(packname, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return packageInfo != null;
     }
 }

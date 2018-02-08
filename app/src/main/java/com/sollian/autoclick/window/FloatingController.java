@@ -1,7 +1,6 @@
 package com.sollian.autoclick.window;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -18,7 +17,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.sollian.autoclick.Cache.ConfigCache;
-import com.sollian.autoclick.MainActivity;
 import com.sollian.autoclick.R;
 import com.sollian.autoclick.Utils.Util;
 import com.sollian.autoclick.adapter.AppInfo;
@@ -217,8 +215,7 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.app_root:
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
+                Util.startActivity(context, ConfigCache.getInstance().getAppInfo().getPkgName());
                 break;
             default:
                 break;
