@@ -17,7 +17,7 @@ import com.sollian.autoclick.adapter.AppInfo;
  */
 public class AutoClickService extends AccessibilityService implements ConfigCache.OnConfigChangeListener {
     private String pkgName;
-    private int timeDelay = 100;
+    private int timeDelay = ConfigCache.SPEED_SLOW;
 
     private Rect rect;
     private String className;

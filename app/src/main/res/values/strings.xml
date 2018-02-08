@@ -3,4 +3,11 @@
     <string name="auto_click_accessibility_description">
         自动点击的服务
     </string>
+
+    <string-array name="speed">
+        <item>慢</item>
+        <item>中</item>
+        <item>快</item>
+        <item>极快</item>
+    </string-array>
 </resources>

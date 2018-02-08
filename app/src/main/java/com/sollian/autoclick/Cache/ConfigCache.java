@@ -24,6 +24,11 @@ public final class ConfigCache {
     public static final int TYPE_GUIDE_SEL_TARGET = 9;
     public static final int TYPE_GUIDE_START_AUTO_CLICK = 10;
 
+    public static final int SPEED_SLOW = 100;
+    public static final int SPEED_MIDDLE = 70;
+    public static final int SPEED_FAST = 40;
+    public static final int SPEED_VERY_FAST = 10;
+
     private boolean isEnable;
     private AppInfo appInfo;
     private float frequency;
@@ -76,6 +81,9 @@ public final class ConfigCache {
     }
 
     public void setTimeDelay(int timeDelay) {
+        if (this.timeDelay == timeDelay) {
+            return;
+        }
         this.timeDelay = timeDelay;
 
         notifyConfigChange(TYPE_TIME_DELAY);

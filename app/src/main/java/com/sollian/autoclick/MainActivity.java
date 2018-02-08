@@ -24,10 +24,10 @@ import com.sollian.autoclick.window.FloatingController;
 import com.sollian.autoclick.window.FloatingGuide;
 import com.sollian.autoclick.window.FloatingMask;
 
-public class MainActivity extends Activity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, DialogInterface.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener, DialogInterface.OnClickListener, ConfigCache.OnConfigChangeListener {
     private Button vSwitch;
     private TextView vState;
-    private RadioGroup vRadioGroup;
+    private RadioGroup vSpeed;
 
     private View vAppRoot;
     private ImageView vAppIcon;
@@ -48,6 +48,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
 
     private AppAdapter appAdapter;
 
+    int timeDelay = ConfigCache.SPEED_SLOW;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +61,15 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         receiver.registerScreenActionReceiver(this);
 
         checkShowFloatIfNeed();
+
+        ConfigCache.getInstance().register(this);
     }
 
     private void init() {
         vSwitch = findViewById(R.id.btn_switch);
         vState = findViewById(R.id.state);
 
-        vRadioGroup = findViewById(R.id.speed);
+        vSpeed = findViewById(R.id.speed);
 
         vAppRoot = findViewById(R.id.app_root);
         vAppIcon = findViewById(R.id.app_icon);
@@ -77,7 +81,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         vSwitch.setOnClickListener(this);
         vAppRoot.setOnClickListener(this);
 
-        vRadioGroup.setOnCheckedChangeListener(this);
+        vSpeed.setOnCheckedChangeListener(this);
 
         updateSwitch();
         updateAppInfo();
@@ -143,6 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ConfigCache.getInstance().unRegister(this);
         receiver.unRegisterScreenActionReceiver(this);
         handler.removeCallbacksAndMessages(null);
 
@@ -216,19 +221,18 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        int timeDelay = 100;
         switch (checkedId) {
             case R.id.slow:
-                timeDelay = 100;
+                timeDelay = ConfigCache.SPEED_SLOW;
                 break;
             case R.id.middle:
-                timeDelay = 70;
+                timeDelay = ConfigCache.SPEED_MIDDLE;
                 break;
             case R.id.fast:
-                timeDelay = 40;
+                timeDelay = ConfigCache.SPEED_FAST;
                 break;
             case R.id.very_fast:
-                timeDelay = 10;
+                timeDelay = ConfigCache.SPEED_VERY_FAST;
                 break;
             default:
                 break;
@@ -278,6 +282,34 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
         } else {
             vAppName.setText(info.getName());
             vAppIcon.setImageDrawable(info.getIcon());
+        }
+    }
+
+    @Override
+    public void configChange(int type) {
+        switch (type) {
+            case ConfigCache.TYPE_TIME_DELAY:
+                if (timeDelay != ConfigCache.getInstance().getTimeDelay()) {
+                    switch (ConfigCache.getInstance().getTimeDelay()) {
+                        case ConfigCache.SPEED_SLOW:
+                            vSpeed.check(R.id.slow);
+                            break;
+                        case ConfigCache.SPEED_MIDDLE:
+                            vSpeed.check(R.id.middle);
+                            break;
+                        case ConfigCache.SPEED_FAST:
+                            vSpeed.check(R.id.fast);
+                            break;
+                        case ConfigCache.SPEED_VERY_FAST:
+                            vSpeed.check(R.id.very_fast);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            default:
+                break;
         }
     }
 }
