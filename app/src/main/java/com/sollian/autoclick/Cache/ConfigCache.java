@@ -2,6 +2,7 @@ package com.sollian.autoclick.Cache;
 
 import android.graphics.Rect;
 
+import com.sollian.autoclick.Utils.Speed;
 import com.sollian.autoclick.adapter.AppInfo;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public final class ConfigCache {
     private boolean isEnable;
     private AppInfo appInfo;
     private float frequency;
-    private int timeDelay = 100;
+    private Speed timeDelay = Speed.SLOW;
     private final Rect targetRect = new Rect();
     private String targetClassName;
     private int totalCount;
@@ -76,11 +77,11 @@ public final class ConfigCache {
         notifyConfigChange(TYPE_FREQUENCY);
     }
 
-    public int getTimeDelay() {
+    public Speed getTimeDelay() {
         return timeDelay;
     }
 
-    public void setTimeDelay(int timeDelay) {
+    public void setTimeDelay(Speed timeDelay) {
         if (this.timeDelay == timeDelay) {
             return;
         }

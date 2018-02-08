@@ -8,16 +8,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.sollian.autoclick.Cache.ConfigCache;
 import com.sollian.autoclick.R;
+import com.sollian.autoclick.Utils.Speed;
 import com.sollian.autoclick.Utils.Util;
 import com.sollian.autoclick.adapter.AppInfo;
 
@@ -37,11 +35,16 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
     private final Switch vSwitch;
     private final TextView vFrequency;
     private final TextView vCount;
-    private final Spinner vSpeed;
+
+    private final View vDeSpeed;
+    private final TextView vSpeed;
+    private final View vInSpeed;
 
     private boolean isAdded;
 
     private int statusbarHeight;
+
+    private Speed timeDelay;
 
     public FloatingController(Context context) {
         this.context = context.getApplicationContext();
@@ -60,41 +63,15 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
         vAppRoot.setOnClickListener(this);
         vSwitch.setOnCheckedChangeListener(this);
 
-        vSpeed = vRoot.findViewById(R.id.speed);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item,
-                context.getResources().getStringArray(R.array.speed));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        vSpeed.setAdapter(adapter);
-        vSpeed.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        ConfigCache.getInstance().setTimeDelay(ConfigCache.SPEED_SLOW);
-                        break;
-                    case 1:
-                        ConfigCache.getInstance().setTimeDelay(ConfigCache.SPEED_MIDDLE);
-                        break;
-                    case 2:
-                        ConfigCache.getInstance().setTimeDelay(ConfigCache.SPEED_FAST);
-                        break;
-                    case 3:
-                        ConfigCache.getInstance().setTimeDelay(ConfigCache.SPEED_VERY_FAST);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                vSpeed.setSelection(0);
-            }
-        });
-
-        vSpeed.setSelection(getSpeedPos());
         statusbarHeight = Util.getStatusbarHeight(context);
+
+        vDeSpeed = vRoot.findViewById(R.id.deSpeed);
+        vSpeed = vRoot.findViewById(R.id.speed);
+        vInSpeed = vRoot.findViewById(R.id.inSpeed);
+        vDeSpeed.setOnClickListener(this);
+        vInSpeed.setOnClickListener(this);
+        timeDelay = ConfigCache.getInstance().getTimeDelay();
+        updateSpeed();
     }
 
     public void show() {
@@ -146,44 +123,14 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
                 updateSwitchState();
                 break;
             case ConfigCache.TYPE_TIME_DELAY:
-                if (!isSameSpeed()) {
-                    vSpeed.setSelection(getSpeedPos());
+                if (timeDelay != ConfigCache.getInstance().getTimeDelay()) {
+                    timeDelay = ConfigCache.getInstance().getTimeDelay();
+                    updateSpeed();
                 }
                 break;
             default:
                 break;
         }
-    }
-
-    private boolean isSameSpeed() {
-        int pos = vSpeed.getSelectedItemPosition();
-        int timeDelay = ConfigCache.getInstance().getTimeDelay();
-        return pos == 0 && timeDelay == ConfigCache.SPEED_SLOW
-                || pos == 1 && timeDelay == ConfigCache.SPEED_MIDDLE
-                || pos == 2 && timeDelay == ConfigCache.SPEED_FAST
-                || pos == 3 && timeDelay == ConfigCache.SPEED_VERY_FAST;
-    }
-
-    private int getSpeedPos() {
-        int timeDelay = ConfigCache.getInstance().getTimeDelay();
-        int pos = 0;
-        switch (timeDelay) {
-            case ConfigCache.SPEED_SLOW:
-                pos = 0;
-                break;
-            case ConfigCache.SPEED_MIDDLE:
-                pos = 1;
-                break;
-            case ConfigCache.SPEED_FAST:
-                pos = 2;
-                break;
-            case ConfigCache.SPEED_VERY_FAST:
-                pos = 3;
-                break;
-            default:
-                break;
-        }
-        return pos;
     }
 
     private void updateSwitchState() {
@@ -206,6 +153,17 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
         }
     }
 
+    private void updateSpeed() {
+        vSpeed.setText(timeDelay.getDesc());
+        vDeSpeed.setEnabled(true);
+        vInSpeed.setEnabled(true);
+        if (timeDelay == Speed.SLOW) {
+            vDeSpeed.setEnabled(false);
+        } else if (timeDelay == Speed.VERY_FAST) {
+            vInSpeed.setEnabled(false);
+        }
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         ConfigCache.getInstance().setEnable(isChecked);
@@ -217,9 +175,33 @@ public class FloatingController implements ConfigCache.OnConfigChangeListener, C
             case R.id.app_root:
                 Util.startActivity(context, ConfigCache.getInstance().getAppInfo().getPkgName());
                 break;
+            case R.id.deSpeed:
+                changeSpeed(false);
+                break;
+            case R.id.inSpeed:
+                changeSpeed(true);
+                break;
             default:
                 break;
         }
+    }
+
+    private void changeSpeed(boolean increase) {
+        Speed[] speeds = Speed.values();
+        int index = timeDelay.ordinal();
+        if (increase) {
+            if (index >= speeds.length - 1) {
+                return;
+            }
+            timeDelay = speeds[index + 1];
+        } else {
+            if (index <= 0) {
+                return;
+            }
+            timeDelay = speeds[index - 1];
+        }
+        ConfigCache.getInstance().setTimeDelay(timeDelay);
+        updateSpeed();
     }
 
     private class MyTouchListener implements View.OnTouchListener {

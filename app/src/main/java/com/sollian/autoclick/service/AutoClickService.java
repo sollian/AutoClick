@@ -10,6 +10,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.sollian.autoclick.Cache.ConfigCache;
 import com.sollian.autoclick.Utils.LogUtil;
+import com.sollian.autoclick.Utils.Speed;
 import com.sollian.autoclick.adapter.AppInfo;
 
 /**
@@ -17,7 +18,7 @@ import com.sollian.autoclick.adapter.AppInfo;
  */
 public class AutoClickService extends AccessibilityService implements ConfigCache.OnConfigChangeListener {
     private String pkgName;
-    private int timeDelay = ConfigCache.SPEED_SLOW;
+    private Speed timeDelay = Speed.SLOW;
 
     private Rect rect;
     private String className;
@@ -175,7 +176,7 @@ public class AutoClickService extends AccessibilityService implements ConfigCach
             info = new AccessibilityServiceInfo();
         }
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-        info.notificationTimeout = timeDelay;
+        info.notificationTimeout = timeDelay.getTimeDelay();
         setServiceInfo(info);
     }
 }

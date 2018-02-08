@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.sollian.autoclick.Cache.ConfigCache;
 import com.sollian.autoclick.Utils.PermissionUtil;
+import com.sollian.autoclick.Utils.Speed;
 import com.sollian.autoclick.Utils.Util;
 import com.sollian.autoclick.adapter.AppAdapter;
 import com.sollian.autoclick.adapter.AppInfo;
@@ -48,7 +49,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
 
     private AppAdapter appAdapter;
 
-    int timeDelay = ConfigCache.SPEED_SLOW;
+    private Speed timeDelay = Speed.SLOW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,16 +224,16 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.slow:
-                timeDelay = ConfigCache.SPEED_SLOW;
+                timeDelay = Speed.SLOW;
                 break;
             case R.id.middle:
-                timeDelay = ConfigCache.SPEED_MIDDLE;
+                timeDelay = Speed.MIDDLE;
                 break;
             case R.id.fast:
-                timeDelay = ConfigCache.SPEED_FAST;
+                timeDelay = Speed.FAST;
                 break;
             case R.id.very_fast:
-                timeDelay = ConfigCache.SPEED_VERY_FAST;
+                timeDelay = Speed.VERY_FAST;
                 break;
             default:
                 break;
@@ -291,16 +292,16 @@ public class MainActivity extends Activity implements View.OnClickListener, Radi
             case ConfigCache.TYPE_TIME_DELAY:
                 if (timeDelay != ConfigCache.getInstance().getTimeDelay()) {
                     switch (ConfigCache.getInstance().getTimeDelay()) {
-                        case ConfigCache.SPEED_SLOW:
+                        case SLOW:
                             vSpeed.check(R.id.slow);
                             break;
-                        case ConfigCache.SPEED_MIDDLE:
+                        case MIDDLE:
                             vSpeed.check(R.id.middle);
                             break;
-                        case ConfigCache.SPEED_FAST:
+                        case FAST:
                             vSpeed.check(R.id.fast);
                             break;
-                        case ConfigCache.SPEED_VERY_FAST:
+                        case VERY_FAST:
                             vSpeed.check(R.id.very_fast);
                             break;
                         default:

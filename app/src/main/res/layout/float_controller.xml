@@ -49,8 +49,31 @@
         android:layout_height="wrap_content"
         android:textColor="#000" />
 
-    <Spinner
-        android:id="@+id/speed"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/deSpeed"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="0dp"
+            android:text="-" />
+
+        <TextView
+            android:id="@+id/speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minEms="2"
+            android:text="慢"
+            android:textColor="#000" />
+
+        <Button
+            android:id="@+id/inSpeed"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="0dp"
+            android:text="+" />
+    </LinearLayout>
 </LinearLayout>
