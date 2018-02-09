@@ -95,6 +95,9 @@ public class FloatingGuide implements ConfigCache.OnConfigChangeListener {
                 state = State.NONE;
                 updateText();
                 break;
+            case ConfigCache.TYPE_PKG_NAME:
+                updateText();
+                break;
             default:
                 break;
         }
